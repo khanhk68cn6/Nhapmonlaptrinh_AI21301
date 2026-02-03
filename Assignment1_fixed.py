@@ -51,12 +51,31 @@ def get_next_id(laptops):
 # 3. Thêm dữ liệu mới cho sản phẩm
 
 def add_laptop(laptops):
-    
+
     new_id = get_next_id(laptops)
     name = input("Nhập tên sản phẩm: ")
     brand = input("Nhập thương hiệu: ")
-    price = int(input("Nhập giá: "))
-    quantity = int(input("Nhập số lượng tồn kho: "))
+
+    while True:
+        try:
+            price = int(input("Nhập giá: "))
+            if price <= 0:
+                print("❌ Giá phải là số nguyên dương. Vui lòng thử lại.")
+                continue
+            break
+        except ValueError:
+            print("❌ Giá phải là số nguyên. Vui lòng thử lại.")
+
+    while True:
+        try:
+            quantity = int(input("Nhập số lượng tồn kho: "))
+            if quantity < 0:
+                print("❌ Số lượng không được âm. Vui lòng thử lại.")
+                continue
+            break
+        except ValueError:
+            print("❌ Số lượng phải là số nguyên. Vui lòng thử lại.")
+
     cpu = input("Nhập kiểu cpu:")
     ram= input("Nhập dung lượng ram:")
     laptop = {
@@ -68,7 +87,7 @@ def add_laptop(laptops):
         "cpu": cpu,
         "ram": ram
     }
-    
+
     laptops.append(laptop)
     print("✅ Đã thêm sản phẩm thành công!")
     return laptops
@@ -81,8 +100,27 @@ def update_laptop(laptops):
         if laptop["id"] == pid:
             laptop["name"] = input("Tên mới: ")
             laptop["brand"] = input("Thương hiệu mới: ")
-            laptop["price"] = int(input("Giá mới: "))
-            laptop["quantity"] = int(input("Số lượng mới: "))
+
+            while True:
+                try:
+                    laptop["price"] = int(input("Giá mới: "))
+                    if laptop["price"] <= 0:
+                        print("❌ Giá phải là số nguyên dương. Vui lòng thử lại.")
+                        continue
+                    break
+                except ValueError:
+                    print("❌ Giá phải là số nguyên. Vui lòng thử lại.")
+
+            while True:
+                try:
+                    laptop["quantity"] = int(input("Số lượng mới: "))
+                    if laptop["quantity"] < 0:
+                        print("❌ Số lượng không được âm. Vui lòng thử lại.")
+                        continue
+                    break
+                except ValueError:
+                    print("❌ Số lượng phải là số nguyên. Vui lòng thử lại.")
+
             print(" Cập nhật thành công!")
             return
 
