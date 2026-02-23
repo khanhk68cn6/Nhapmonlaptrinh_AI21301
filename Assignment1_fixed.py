@@ -35,7 +35,7 @@ def load_data():
 
 def save_data(laptops):
     with open (File_name, "w", encoding="utf-8" ) as file:
-     json.dump(laptops, file, ensure_ascii=False,indent= 4)
+     json.dump(laptops, file, encoding="utf-8")
 
 # Helper function to get next unique ID
 def get_next_id(laptops):
