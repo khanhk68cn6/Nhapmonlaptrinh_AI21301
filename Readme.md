@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Assignment1_fixed - Quản Lý Laptop
 
 ## Các Đặc Trưng Cơ Bản
@@ -13,3 +14,6 @@
 - **🔢 Tự động tạo ID** - Tự động tạo ID duy nhất theo định dạng LT01, LT02...
 - **✅ Validation** - Kiểm tra dữ liệu đầu vào (giá > 0, số lượng không âm)
 - **🎮 Giao diện Menu** - Menu tương tác với các tùy chọn 1-5 và 0 để thoát
+=======
+
+>>>>>>> 8b9f7204078840c265ec612e6137400e711ce6fe
