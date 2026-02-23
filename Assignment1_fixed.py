@@ -1,4 +1,4 @@
-# Cấu trúc dữ liệu thư viện
+ # Cấu trúc dữ liệu thư viện
 
 laptops = [
  {
@@ -48,19 +48,83 @@ def get_next_id(laptops):
     max_id = max(ids)
     return f"LT{max_id + 1:02d}"
 
+# ========== INPUT VALIDATION HELPER FUNCTIONS ==========
+
+def get_valid_string_input(prompt, field_name):
+    """
+    Validates that user input is not empty.
+    
+    Args:
+        prompt (str): The message to display to the user
+        field_name (str): The name of the field being validated (for error messages)
+        
+    Returns:
+        str: A non-empty string from user input
+    """
+    while True:
+        value = input(prompt).strip()
+        if value:
+            return value
+        print(f"❌ {field_name} không được để trống. Vui lòng nhập lại.")
+
+def validate_product_id(pid, laptops):
+    """
+    Validates that product ID exists in the inventory.
+    
+    Args:
+        pid (str): The product ID to validate
+        laptops (list): List of all laptops
+    
+    Returns:
+        bool: True if valid, False otherwise
+    """
+    for laptop in laptops:
+        if laptop["id"] == pid.upper():
+            return True
+    print(f"❌ Không tìm thấy sản phẩm với mã '{pid}'.")
+    return False
+
+def validate_menu_choice(choice):
+    """
+    Validates that menu choice is a valid number between 0-5.
+    
+    Args:
+        choice (str): User's menu selection
+    
+    Returns:
+        int or None: Valid choice as integer, or None if invalid
+    """
+    try:
+        num = int(choice)
+        if num < 0 or num > 5:
+            print("❌ Lựa chọn không hợp lệ! Vui lòng chọn từ 0-5.")
+            return None
+        else:
+            return num
+    except ValueError:
+        print("❌ Lựa chọn phải là số! Vui lòng nhập lại.")
+        return None
+
+
 # 3. Thêm dữ liệu mới cho sản phẩm
 
 def add_laptop(laptops):
 
     new_id = get_next_id(laptops)
-    name = input("Nhập tên sản phẩm: ")
-    brand = input("Nhập thương hiệu: ")
+    name = get_valid_string_input("Nhập tên sản phẩm: ", "Tên sản phẩm")
+    brand = get_valid_string_input("Nhập thương hiệu: ", "Thương hiệu")
 
+    MAX_PRICE = 1000000000  # 1 tỷ USD
+    
     while True:
         try:
-            price = int(input("Nhập giá: "))
+            price_input = input("Nhập giá (VND): ")
+            price = int(price_input)
             if price <= 0:
                 print("❌ Giá phải là số nguyên dương. Vui lòng thử lại.")
+                continue
+            if price > MAX_PRICE:
+                print(f"❌ Giá không được vượt quá {MAX_PRICE:,} VND (1 tỷ USD). Vui lòng thử lại.")
                 continue
             break
         except ValueError:
@@ -76,8 +140,8 @@ def add_laptop(laptops):
         except ValueError:
             print("❌ Số lượng phải là số nguyên. Vui lòng thử lại.")
 
-    cpu = input("Nhập kiểu cpu:")
-    ram= input("Nhập dung lượng ram:")
+    cpu = get_valid_string_input("Nhập kiểu CPU: ", "CPU")
+    ram = get_valid_string_input("Nhập dung lượng RAM: ", "RAM")
     laptop = {
         "id": new_id,
         "name": name,
@@ -94,49 +158,75 @@ def add_laptop(laptops):
 
 # 4 Cập nhật sản phẩm
 def update_laptop(laptops):
-    pid = input("✏️ Nhập mã sản phẩm cần cập nhật: ")
+    pid = input("✏️ Nhập mã sản phẩm cần cập nhật: ").upper()
 
+    # Validate product ID exists
+    found = False
     for laptop in laptops:
         if laptop["id"] == pid:
-            laptop["name"] = input("Tên mới: ")
-            laptop["brand"] = input("Thương hiệu mới: ")
+            found = True
+            laptop["name"] = get_valid_string_input("Tên mới: ", "Tên sản phẩm")
+            laptop["brand"] = get_valid_string_input("Thương hiệu mới: ", "Thương hiệu")
 
+            # Price update with skip option and limit
+            MAX_PRICE = 1000000000  # 1 tỷ USD
+            print(f"Giá hiện tại: {laptop['price']} VND")
             while True:
+                price_input = input("Giá mới (Nhập số để thay đổi, để trống để giữ nguyên): ").strip()
+                if price_input == "":
+                    print("➡️ Giá không thay đổi.")
+                    break
                 try:
-                    laptop["price"] = int(input("Giá mới: "))
-                    if laptop["price"] <= 0:
+                    price = int(price_input)
+                    if price <= 0:
                         print("❌ Giá phải là số nguyên dương. Vui lòng thử lại.")
                         continue
+                    if price > MAX_PRICE:
+                        print(f"❌ Giá không được vượt quá {MAX_PRICE:,} VND (1 tỷ USD). Vui lòng thử lại.")
+                        continue
+                    laptop["price"] = price
                     break
                 except ValueError:
                     print("❌ Giá phải là số nguyên. Vui lòng thử lại.")
 
+            # Quantity update
+            print(f"Số lượng hiện tại: {laptop['quantity']}")
             while True:
+                quantity_input = input("Số lượng mới (Nhập số để thay đổi, để trống để giữ nguyên): ").strip()
+                if quantity_input == "":
+                    print("➡️ Số lượng không thay đổi.")
+                    break
                 try:
-                    laptop["quantity"] = int(input("Số lượng mới: "))
-                    if laptop["quantity"] < 0:
+                    quantity = int(quantity_input)
+                    if quantity < 0:
                         print("❌ Số lượng không được âm. Vui lòng thử lại.")
                         continue
+                    laptop["quantity"] = quantity
                     break
                 except ValueError:
                     print("❌ Số lượng phải là số nguyên. Vui lòng thử lại.")
 
-            print(" Cập nhật thành công!")
+            print("✅ Cập nhật thành công!")
             return
 
-    print("❌ Không tìm thấy sản phẩm.")
+    if not found:
+        print(f"❌ Không tìm thấy sản phẩm với mã '{pid}'.")
 
 # 5. Xóa sản phẩm
 def delete_laptop(laptops):
-    pid = input("🗑️ Nhập mã sản phẩm cần xóa: ")
+    pid = input("🗑️ Nhập mã sản phẩm cần xóa: ").upper()
 
+    # Validate product ID exists
+    found = False
     for laptop in laptops:
         if laptop["id"] == pid:
+            found = True
             laptops.remove(laptop)
-            print(" Đã xóa sản phẩm.")
+            print("✅ Đã xóa sản phẩm thành công!")
             return
 
-    print("❌ Không tìm thấy sản phẩm.")
+    if not found:
+        print(f"❌ Không tìm thấy sản phẩm với mã '{pid}'.")
     
 
 # 6. Tìm kiếm theo tên
@@ -189,23 +279,26 @@ def aa():
 """)
 
         choice = input("Chọn chức năng: ")
-
-        if choice == "1":
+        
+        # Validate menu choice
+        valid_choice = validate_menu_choice(choice)
+        if valid_choice is None:
+            continue  # Invalid choice, ask again
+            
+        if valid_choice == 1:
             laptops = add_laptop(laptops)
-        elif choice == "2":
+        elif valid_choice == 2:
             update_laptop(laptops)
-        elif choice == "3":
+        elif valid_choice == 3:
             delete_laptop(laptops)
-        elif choice == "4":
+        elif valid_choice == 4:
             search_laptop_by_name(laptops)
-        elif choice == "5":
+        elif valid_choice == 5:
             display_all_laptop(laptops)
-        elif choice == "0":
+        elif valid_choice == 0:
             save_data(laptops)
             print("👋 Thoát chương trình. Dữ liệu đã được lưu.")
             break
-        else:
-            print("❌ Lựa chọn không hợp lệ!")
 
 if __name__ == "__main__":
     aa()
