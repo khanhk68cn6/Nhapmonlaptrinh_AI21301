@@ -20,4 +20,8 @@
 - [ ] Test the changes
 
 ## Files to Edit:
+<<<<<<< HEAD
 - `Nhapmonlaptrinh_AI21301/Assignment1_fixed.py`
+=======
+- `Nhapmonlaptrinh_AI21301/Assignment1_fixed.py`
+>>>>>>> Master
